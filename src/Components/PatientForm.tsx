@@ -3,6 +3,7 @@ import { ErrorAlert } from "./ErrorAlert"
 import { DraftPatient } from "../types"
 import { usePatientStore } from "../store";
 import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 export const PatientForm = () => {
   
@@ -16,14 +17,21 @@ export const PatientForm = () => {
             setValue
         } = useForm<DraftPatient>()
 
+
     const registerPatient = (data: DraftPatient) => {
         if(activeId){
             updatePatient(data)
-            reset()
+            toast("Paciente actualizado correctamente", {
+                type: "success"
+            })
         }else{
             addPatient(data)
-            reset()
+            toast("Paciente adicionado correctamente", {
+                type: "success"
+            })
         }
+
+        reset()
     
     }
 

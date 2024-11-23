@@ -6,8 +6,6 @@ export const PatientList = () => {
   const { patients } = usePatientStore()
   //const patients = usePatientStore((state) => state.patients) es otra forma de instanciar para obtener los datos / no me agrada mucho
 
-  console.log(patients)
-
   return (
     <div className="md: w-1/2 lg:3/5 md:h-screen overflow-y-scroll">
       {
@@ -21,7 +19,7 @@ export const PatientList = () => {
           </p>
           {
             patients.map(patient => (
-              <PatientDetails patient={patient}/>
+              <PatientDetails key={patient.id} patient={patient}/>
             ))
           }
           </>
