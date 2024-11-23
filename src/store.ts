@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 import { DraftPatient, Patient } from "./types";
 import { v4 as UUID4 } from "uuid";
 
@@ -19,33 +19,42 @@ const createPatient = (patient:DraftPatient) : Patient => {
     }
 }
 
-export const usePatientStore = create<PatientState>()(devtools((set) => ({
 
-    patients : [],
-    activeId:'',
-    addPatient: (data) => {
-       const newPatient = createPatient(data)
-       set((state) => ({
-        patients: [...state.patients, newPatient]
-       }))
-    },
-    deletePatient: (id) => {
-        set((state) => ({
-            patients: state.patients.filter(patient => patient.id !== id)
-        }))
-    },
-    getPatientById: (id) => {
-        set(() => ({
-            activeId: id
-        }))
-    },
-    updatePatient : (data) => {
+export const usePatientStore = create<PatientState>()(
+    devtools(
+        persist((set) => ({
 
-        set((state) => ({
-            patients: state.patients.map(patient => patient.id === state.activeId ? {id: state.activeId, ...data} : patient),
-            activeId: null!
-        }))
+            patients : [],
+            activeId:'',
+            addPatient: (data) => {
+            const newPatient = createPatient(data)
+            set((state) => ({
+                patients: [...state.patients, newPatient]
+            }))
+            },
+            deletePatient: (id) => {
+                set((state) => ({
+                    patients: state.patients.filter(patient => patient.id !== id)
+                }))
+            },
+            getPatientById: (id) => {
+                set(() => ({
+                    activeId: id
+                }))
+            },
+            updatePatient : (data) => {
 
-    }
+                set((state) => ({
+                    patients: state.patients.map(patient => patient.id === state.activeId ? {id: state.activeId, ...data} : patient),
+                    activeId: null!
+                }))
 
-})))
+            }
+
+        }
+    ),
+    {
+        name: 'patient-storage'
+        /*storage: createJSONStorage(() => sessionStorage) (esto almacena en session en vez de localStorage) */
+    })
+))
